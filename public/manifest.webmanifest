@@ -2,6 +2,7 @@
    "name": "Damage Calculator",
    "short_name": "DamageCalc",
    "start_url": ".",
+  "scope": ".",
    "display": "standalone",
    "background_color": "#ffffff",
    "theme_color": "#ff0000",
