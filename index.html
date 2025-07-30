@@ -1,24 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Load Tailwind from CDN for quick styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom font for a polished look -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-      }
-    </style>
-    <title>Damage Calculator</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+diff --git a/index.html b/index.html
+index 7c81efa3f9a2b6146515a3a065d66e8ca7d4b8ad..c1fdfa019a5a45a6069acb5fa3ce7f2dcc156543 100644
+--- a/index.html
++++ b/index.html
+@@ -1,24 +1,33 @@
+ <!DOCTYPE html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Load Tailwind from CDN for quick styling -->
+     <script src="https://cdn.tailwindcss.com"></script>
+     <!-- Custom font for a polished look -->
+     <link
+       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+       rel="stylesheet"
+     />
+     <style>
+       body {
+         font-family: 'Inter', sans-serif;
+       }
+     </style>
+       <link rel="manifest" href="/manifest.webmanifest" />
+       <meta name="theme-color" content="#ff0000" />
+       <title>Damage Calculator</title>
+   </head>
+   <body>
+     <div id="root"></div>
+     <script type="module" src="/src/main.tsx"></script>
+     <script>
+       if ('serviceWorker' in navigator) {
+         window.addEventListener('load', () => {
+           navigator.serviceWorker.register('/sw.js');
+         });
+       }
+     </script>
+   </body>
+ </html>
