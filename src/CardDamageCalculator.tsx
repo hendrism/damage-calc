@@ -6,6 +6,7 @@ interface DamageType {
   title: string;
   icon: JSX.Element;
   description: string;
+  kidDescription: string;
   example: string;
   color: string;
   category: string;
@@ -17,6 +18,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: '90+ Base + Additive',
     icon: <Plus className="w-6 h-6" />,
     description: 'Base damage plus extra for each condition',
+    kidDescription: 'Start with base damage and add more for each energy card.',
     example: '90 + 30 per energy attached',
     color: 'from-red-500 to-red-600',
     category: 'Basic',
@@ -26,6 +28,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: '30× Multiplicative',
     icon: <X className="w-6 h-6" />,
     description: 'Multiply base value by condition count',
+    kidDescription: 'Damage is the modifier times the number of energy cards.',
     example: '30 × number of energy cards',
     color: 'from-purple-500 to-purple-600',
     category: 'Basic',
@@ -35,6 +38,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Static Conditional',
     icon: <Target className="w-6 h-6" />,
     description: 'Fixed bonus if condition is met',
+    kidDescription: 'Add bonus damage when the condition is true.',
     example: '+60 if opponent is Pokemon-EX',
     color: 'from-blue-500 to-blue-600',
     category: 'Conditional',
@@ -44,6 +48,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Replace Damage',
     icon: <Sparkles className="w-6 h-6" />,
     description: 'Override damage if condition met',
+    kidDescription: 'Use new damage instead if the condition is true.',
     example: '120 instead if evolved this turn',
     color: 'from-green-500 to-green-600',
     category: 'Conditional',
@@ -53,6 +58,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Cost-Based Scaling',
     icon: <Flame className="w-6 h-6" />,
     description: 'Damage based on cards discarded',
+    kidDescription: 'Damage depends on how many cards you discard.',
     example: '50 per Fire energy discarded',
     color: 'from-orange-500 to-orange-600',
     category: 'Advanced',
@@ -62,6 +68,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Energy-Type Specific',
     icon: <Droplets className="w-6 h-6" />,
     description: 'Bonus for specific energy types',
+    kidDescription: 'Add damage for each matching energy you have.',
     example: '+20 per Fire energy attached',
     color: 'from-pink-500 to-pink-600',
     category: 'Advanced',
@@ -71,6 +78,7 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Game State Based',
     icon: <Users className="w-6 h-6" />,
     description: 'Based on board or hand state',
+    kidDescription: 'Damage depends on things like cards in hand.',
     example: '+20 per card in opponent\'s hand',
     color: 'from-teal-500 to-teal-600',
     category: 'Advanced',
@@ -80,13 +88,20 @@ const DAMAGE_TYPES: DamageType[] = [
     title: 'Coin Flip Effects',
     icon: <Coins className="w-6 h-6" />,
     description: 'Damage based on coin flip results',
+    kidDescription: 'Damage grows with each heads you flip.',
     example: '80 damage per heads (flip 3)',
     color: 'from-yellow-500 to-yellow-600',
     category: 'Random',
   },
 ];
 
-export default function CardDamageCalculator() {
+export default function CardDamageCalculator({
+  kidMode,
+  setKidMode,
+}: {
+  kidMode: boolean;
+  setKidMode: (value: boolean) => void;
+}) {
   const [currentMode, setCurrentMode] = useState<DamageType | null>(null);
   const [baseDamage, setBaseDamage] = useState(90);
   const [operation, setOperation] = useState('add');
@@ -145,6 +160,14 @@ export default function CardDamageCalculator() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-3 sm:p-4">
+        <button
+          onClick={() => setKidMode(!kidMode)}
+          className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg hover:bg-white ${
+            kidMode ? 'bg-yellow-300 text-gray-800' : 'bg-white/80 text-gray-800'
+          }`}
+        >
+          {kidMode ? 'Kid Mode: ON' : 'Kid Mode: OFF'}
+        </button>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-2 drop-shadow-2xl flex items-center justify-center gap-2 flex-wrap">
@@ -154,6 +177,9 @@ export default function CardDamageCalculator() {
             </h1>
             <p className="text-lg sm:text-xl text-purple-100 font-medium">
               Choose your attack type to calculate damage!
+            </p>
+            <p className="mt-2 text-sm text-yellow-100 font-semibold">
+              {kidMode ? 'Kid Mode is ON' : 'Kid Mode is OFF'}
             </p>
           </div>
 
@@ -179,7 +205,7 @@ export default function CardDamageCalculator() {
                           {type.title}
                         </h3>
                         <p className="text-sm opacity-90 leading-tight">
-                          {type.description}
+                          {kidMode ? type.kidDescription : type.description}
                         </p>
                         <div className="bg-white/20 rounded-lg p-2 text-xs font-medium">
                           {type.example}
@@ -201,12 +227,20 @@ export default function CardDamageCalculator() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-3 sm:p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8">
+        <div className="text-center mb-6 sm:mb-8 relative">
           <button
             onClick={() => setCurrentMode(null)}
             className="absolute left-4 top-4 bg-white/20 text-white p-3 rounded-full hover:bg-white/30 transition-all duration-200 backdrop-blur-sm"
           >
             <ArrowLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={() => setKidMode(!kidMode)}
+            className={`absolute right-4 top-4 px-4 py-2 rounded-lg shadow-lg hover:bg-white ${
+              kidMode ? 'bg-yellow-300 text-gray-800' : 'bg-white/80 text-gray-800'
+            }`}
+          >
+            {kidMode ? 'Kid Mode: ON' : 'Kid Mode: OFF'}
           </button>
 
           <div
@@ -218,7 +252,10 @@ export default function CardDamageCalculator() {
             </h1>
           </div>
           <p className="text-lg text-purple-100 font-medium">
-            {currentMode?.description}
+            {kidMode ? currentMode?.kidDescription : currentMode?.description}
+          </p>
+          <p className="mt-2 text-sm text-yellow-100 font-semibold">
+            {kidMode ? 'Kid Mode is ON' : 'Kid Mode is OFF'}
           </p>
         </div>
 
@@ -457,6 +494,11 @@ export default function CardDamageCalculator() {
                   </div>
                 </>
               )}
+              {kidMode && (
+                <p className="text-center text-sm text-gray-700">
+                  Tip: use the plus and minus buttons to change the numbers.
+                </p>
+              )}
             </div>
           </div>
 
@@ -598,6 +640,9 @@ export default function CardDamageCalculator() {
                   <div className="bg-white p-3 rounded-lg border border-indigo-200">
                     {currentMode?.example}
                   </div>
+                  {kidMode && (
+                    <p className="mt-2">Follow the example to see how damage is counted.</p>
+                  )}
                 </div>
               </div>
             </div>
